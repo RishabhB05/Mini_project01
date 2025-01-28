@@ -56,7 +56,7 @@ app.get('/login', async (req, res)=>{
             //to send token
             let token = jwt.sign({email: email , userid: user._id}, "secret")
             res.cookie("token",token);
-            res.status(200).send("you can login");
+            res.status(200).redirect("/profile");
        
 
       }   
@@ -74,7 +74,7 @@ app.get('/logout', async (req, res)=>{
 
 //middleware: to stay loggin
 function isLoggedIn(req, res,next ){
-    if(req.cookies.token ==="") res.send("You must be logged in");
+    if(req.cookies.token ==="") res.redirect("/login")
     else{
        let data = jwt.verify(req.cookies.token , "secret")
        req.user = data;
@@ -83,8 +83,21 @@ function isLoggedIn(req, res,next ){
     }
 }
 
-app.get("/profile", isLoggedIn,(req,res)=>{
+app.get("/profile", isLoggedIn, async(req,res)=>{
+    let user = await userModel.findOne({email: req.user.email});
+    res.render("/profile")
+});
 
+
+app.get("/post", isLoggedIn, async(req,res)=>{
+    let user = await userModel.findOne({email: req.user.email});
+    let {content} = req.body;
+
+   let post = await postModel.create({
+        user: user._id,
+        content: 
+    })
+    
 })
 
 
