@@ -22,12 +22,11 @@ const userSchema = new mongoose.Schema({
     required: true, // Ensures that the age is provided
   },
   email: {
-    type: Number,
-    required: true, // Ensures that the age is provided
+    type: String,  // Changed from Number to String for email addresses
+    required: true, // Ensures that the email is provided
+    unique: true, // Ensures the email is unique
   },
-
-  post: [{type:mongoose.Schema.Types.ObjectId , ref:"post"}],
-  
+  post: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
 });
 
 // Create the model based on the schema

@@ -1,29 +1,22 @@
 const mongoose = require('mongoose');
 
-// Define the schema for the User
-const postSchema =  mongoose.Schema({
-  
+// Define the schema for the Post
+const postSchema = mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref:"user"
+        ref: "User" // Referring to the 'User' model correctly
     },
-
-    date:{
-      type:date,
-      default:Date.now
+    date: {
+        type: Date,
+        default: Date.now
     },
-
-    content:String,
-
+    content: String,
     likes: [
-        {type:mongoose.Schema.Types.ObjectId, ref:"user"}
-
+        { type: mongoose.Schema.Types.ObjectId, ref: "User" } // Referring to the 'User' model correctly
     ]
-
-  
 });
 
 // Create the model based on the schema
-const User = mongoose.model('User', userSchema);
+const Post = mongoose.model('Post', postSchema);
 
-module.exports = User;
+module.exports = Post;
