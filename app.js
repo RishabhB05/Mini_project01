@@ -52,11 +52,18 @@ app.get('/login', async (req, res)=>{
     if(!user) return res.status(500).send("incorrect credentials");
 
     bcrypt.compare(password, user.password, function(err, result) {
-        if(result) res.status(200).send("you can login");
+        if(result){
+            //to send token
+            let token = jwt.sign({email: email , userid: user._id}, "secret")
+            res.cookie("token",token);
+            res.status(200).send("you can login");
+       
+
+      }   
          else res.redirect("/login")   
     })  
 
- 
+
 });
 
 
@@ -65,6 +72,20 @@ app.get('/logout', async (req, res)=>{
     res.redirect("login")
 });
 
+//middleware: to stay loggin
+function isLoggedIn(req, res,next ){
+    if(req.cookies.token ==="") res.send("You must be logged in");
+    else{
+       let data = jwt.verify(req.cookies.token , "secret")
+       req.user = data;
+       next();
+
+    }
+}
+
+app.get("/profile", isLoggedIn,(req,res)=>{
+
+})
 
 
 app.listen(4000);
