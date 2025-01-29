@@ -84,8 +84,10 @@ function isLoggedIn(req, res,next ){
 }
 
 app.get("/profile", isLoggedIn, async(req,res)=>{
-    let user = await userModel.findOne({email: req.user.email});
-    res.render("/profile")
+    let user = await userModel.findOne({email: req.user.email}).populate("posts");
+    //to show the posts we populate
+    
+    res.render("/profile",{user})
 });
 
 
@@ -95,10 +97,15 @@ app.get("/post", isLoggedIn, async(req,res)=>{
 
    let post = await postModel.create({
         user: user._id,
-        content: 
+        content
     })
+
+    //we send the post id to user 
+    user.posts.pus(post._id);
+   await user.save();
+   res.redirect("profile");
     
-})
+});
 
 
 app.listen(4000);
